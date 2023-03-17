@@ -2,18 +2,6 @@ const fs = require("fs/promises");
 const path = require("path");
 const contactsPath = path.join(__dirname, "contacts.json");
 const { v4: uuidv4 } = require("uuid");
-const Joi = require("joi");
-
-const contactSchema = Joi.object({
-    name: Joi.string().required(),
-    email: Joi.string()
-        .email({
-            minDomainSegments: 2,
-            tlds: { allow: ["com", "net"] },
-        })
-        .required(),
-    phone: Joi.string().required(),
-});
 
 const listContacts = async () => {
     try {
@@ -50,19 +38,13 @@ const removeContact = async (contactId) => {
     }
 };
 
-const addContact = async (body) => {
-    const result = contactSchema.validate(body);
-    if (result.error) {
-        const error = new Error(result.error.details[0].message);
-        error.status = 400;
-        throw error;
-    }
+const addContact = async ({ body }, res) => {
     const data = await listContacts();
     const newContact = {
         id: uuidv4(),
-        name: result.value.name,
-        email: result.value.email,
-        phone: result.value.phone,
+        name: body.name,
+        email: body.email,
+        phone: body.phone,
     };
 
     data.push(newContact);
@@ -70,20 +52,16 @@ const addContact = async (body) => {
     return data;
 };
 
-const updateContact = async (contactId, body) => {
-    const result = contactSchema.validate(body);
-    if (result.error) {
-        const error = new Error(result.error.details[0].message);
-        error.status = 400;
-        throw error;
-    }
+const updateContact = async (req, res) => {
     const data = await listContacts();
-    const contactIndex = data.findIndex((contact) => contact.id === contactId);
+    const contactIndex = data.findIndex(
+        (contact) => contact.id === req.params.contactId
+    );
     if (contactIndex === -1) {
         return null;
     }
 
-    data[contactIndex] = { ...data[contactIndex], ...result.value };
+    data[contactIndex] = { ...data[contactIndex], ...req.body };
     await fs.writeFile(contactsPath, JSON.stringify(data));
     return data;
 };
