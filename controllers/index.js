@@ -1,3 +1,4 @@
 const contacts = require("./contactsController");
+const users = require("./usersController");
 
-module.exports = { contacts };
+module.exports = { contacts, users };
