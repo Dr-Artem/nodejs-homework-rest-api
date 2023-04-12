@@ -5,6 +5,7 @@ const {
     authCurrentMiddleware,
     errorControlMiddleware,
     contactValidationMiddleware,
+    uploadMiddleware,
 } = require("../../middlewares");
 const { users: ctrl } = require("../../controllers");
 const { joiUserSchema } = require("../../models/user");
@@ -28,6 +29,12 @@ router.get(
     "/current",
     authCurrentMiddleware,
     errorControlMiddleware(ctrl.currentUser)
+);
+router.patch(
+    "/avatars",
+    authCurrentMiddleware,
+    uploadMiddleware.single("avatar"),
+    errorControlMiddleware(ctrl.updateAvatar)
 );
 
 module.exports = router;
