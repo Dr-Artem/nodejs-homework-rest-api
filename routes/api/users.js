@@ -40,5 +40,6 @@ router.get(
     "/verify/:verificationToken",
     errorControlMiddleware(ctrl.verifyEmail)
 );
+router.post("/verify", errorControlMiddleware(ctrl.reVerifyEmail));
 
 module.exports = router;

@@ -11,7 +11,7 @@ const loginUser = async (req, res) => {
     const passCompare = bcryptjs.compareSync(password, user.password);
 
     if (!passCompare || !user.verify || !user) {
-        throw new Unauthorized(
+        throw Unauthorized(
             "Email is wrong or not verify, or password is wrong"
         );
     }
