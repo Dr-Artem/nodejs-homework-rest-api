@@ -36,5 +36,9 @@ router.patch(
     uploadMiddleware.single("avatar"),
     errorControlMiddleware(ctrl.updateAvatar)
 );
+router.get(
+    "/verify/:verificationToken",
+    errorControlMiddleware(ctrl.verifyEmail)
+);
 
 module.exports = router;
