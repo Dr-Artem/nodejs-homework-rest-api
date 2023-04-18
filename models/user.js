@@ -26,18 +26,27 @@ const userShema = Schema(
             type: String,
             required: true,
         },
+        verify: {
+            type: Boolean,
+            default: false,
+        },
+        verificationToken: {
+            type: String,
+            required: [true, "Verify token is required"],
+        },
     },
     { versionkey: false, timestamps: true }
 );
 
 const joiUserSchema = Joi.object({
-    password: Joi.string().required(),
     email: Joi.string()
         .email({
             minDomainSegments: 2,
-            tlds: { allow: ["com", "net"] },
+            tlds: { allow: ["com", "net", "me"] },
         })
         .required(),
+    password: Joi.string().required(),
+
     subscription: Joi.string(),
     token: Joi.string(),
 });
